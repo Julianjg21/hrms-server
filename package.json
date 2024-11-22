@@ -1,0 +1,11 @@
+{
+  "name": "hrms-server",
+  "version": "1.0.0",
+  "main": "Server.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Julian Jimenez",
+  "license": "ISC",
+  "description": "The server receives and responds to client requests for our hrms software."
+}

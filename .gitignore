@@ -2,17 +2,15 @@
 
 # dependencies
 /node_modules
-
 # testing
 /coverage
 
 # production
 /build
-
+/src/config/configs.env
 # misc
 .DS_Store
 .env
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-

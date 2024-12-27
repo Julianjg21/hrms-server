@@ -1,8 +1,11 @@
 import express from "express";
 import cors from "cors";
+
 import AuthRoutes from "./routes/AuthRoutes.mjs";
+import UserRoleRoutes from "./routes/UserRoleRoutes.mjs"
 import db from "./config/Database.mjs";
 import ResetPasswordRoutes from "./routes/ResetPasswordRoutes.mjs";
+import UserManagement from "./routes/UserManagementRoutes.mjs";
 const App = express();
 
 App.use(cors()); //enable CORS
@@ -10,6 +13,8 @@ App.use(express.json()); //json parsing
 
 App.use("/auth", AuthRoutes);
 App.use("/requestResetPassword", ResetPasswordRoutes);
+App.use("/requestUserRole", UserRoleRoutes);
+App.use("/requestUserManagement", UserManagement);
 //Database connection management
 (async () => {
   try {

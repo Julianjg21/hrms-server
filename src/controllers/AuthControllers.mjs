@@ -5,6 +5,7 @@ import {
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+import { findUserPermission } from "../models/RoleModel.mjs";
 dotenv.config();
 
 //verify keys and create access token
@@ -51,8 +52,16 @@ export const loginUser = async (req, res) => {
           process.env.JWT_SECRET,
           { expiresIn: "1h" }
         );
+
+        //get permissions from the user's role
+        const permissions = await findUserPermission(findByEmail.user_id);
+        if (permissions.length === 0) {
+          return res.status(404).json({
+            message: "No permissions found for this  role of the user",
+          });
+        }
         //send token to client
-        res.json({ token });
+        res.json({ token, permissions, userId: findByEmail.user_id });
       } catch (error) {
         //if an error occurs in the function process, it will be sent as a response to the client
         res.status(500).json({ message: "Server error", error: error.message });
@@ -90,8 +99,20 @@ export const loginUser = async (req, res) => {
           process.env.JWT_SECRET,
           { expiresIn: "1h" }
         );
+
+        //get permissions from the user's role
+        const permissions = await findUserPermission(
+          findByIdentification.user_id
+        );
+        if (permissions.length === 0) {
+          return res.status(404).json({
+            message: "No permissions found for this  role of the user",
+          });
+        }
+        console.log("employee", permissions);
+
         //send token to client
-        res.json({ token });
+        res.json({ token, permissions, userId: findByIdentification.user_id });
       } catch (error) {
         //if an error occurs in the function process, it will be sent as a response to the client
         res.status(500).json({ message: "Server error", error: error.message });

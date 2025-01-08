@@ -50,7 +50,7 @@ export const findEmailController = async (req, res) => {
         secure: true,
         auth: {
           user: "julianjimenez2128@gmail.com",
-          pass: "nivu qqds gvxa oaca",
+          pass: "",
         },
       });
 

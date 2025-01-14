@@ -64,3 +64,18 @@ export const registerUser = async (userData, userDetails) => {
     throw error; //Throw the error to handle it out of scope
   }
 };
+
+export const searchUsers = async (user_names, type_identification, identification) => {
+  try {
+    //search the user by name, type of identification and identification
+    const [rows] = await db.query(
+      "SELECT usr.user_id, usr.email, usr.user_type, ud.user_names, ud.last_names, ud.phone_number, ud.identification, ud.birth_date, ud.bank, ud.account_number, ud.type_identification FROM users usr INNER JOIN user_details ud ON usr.user_id = ud.user_id WHERE user_names = ? AND type_identification = ? AND identification = ?",
+      [user_names, type_identification, identification]
+    );
+    //return the user data
+    return rows;
+  } catch (error) {
+    console.error("Error al buscar el usuario:", error.message);
+    throw error;
+  }
+}

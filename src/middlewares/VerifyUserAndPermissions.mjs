@@ -11,7 +11,6 @@ export const verifyTokenAndPermisions = async (req, res, next) => {
   //If the Authorization header is missing or improperly formatted, the token will be undefined
   const token = req.headers.authorization?.split(" ")[1];
   const { permissions, userId } = req.body;
-  console.log(permissions,userId, token);
   //check if the token is missing
   if (!token || permissions.length === 0 || !userId) {
     return res

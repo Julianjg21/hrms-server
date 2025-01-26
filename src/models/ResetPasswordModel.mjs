@@ -1,7 +1,7 @@
 import db from "../config/Database.mjs";
 import bcrypt from "bcrypt"
 //Save the password reset request
-export const saveResetRequest = async (email, code, expiresAt) => {
+export const saveResetRequestModel = async (email, code, expiresAt) => {
   const hashedCode = await bcrypt.hash(code, 10);
   await db.query(
     "INSERT INTO password_reset_requests(email, code, expires_at) VALUES (?, ?, ?)",
@@ -11,7 +11,7 @@ export const saveResetRequest = async (email, code, expiresAt) => {
 };
 
 //Verify the security code
-export const verifyCode = async (email, code) => {
+export const verifyCodeModel = async (email, code) => {
   const [rows] = await db.query(
     "SELECT code FROM password_reset_requests WHERE email = ? AND expires_at > NOW() ORDER BY created_at DESC LIMIT 1",
     [email]
@@ -24,14 +24,14 @@ export const verifyCode = async (email, code) => {
 };
 
 //Invalidate all requests for an email
-export const invalidateRequestsByEmail = async (email) => {
+export const invalidateRequestsByEmailModel = async (email) => {
   await db.query("DELETE FROM password_reset_requests WHERE email = ?", [
     email,
   ]);
 };
 
 //Change the password in the `users` table
-export const updateUserPassword = async (email, hashedPassword) => {
+export const updateUserPasswordModel = async (email, hashedPassword) => {
   await db.query(" UPDATE users SET password_hash = ? WHERE email = ?", [
     hashedPassword,
     email,
@@ -40,7 +40,7 @@ export const updateUserPassword = async (email, hashedPassword) => {
 
 
 //Count recent code requests
-export const countRecentRequests = async (email, timeframeInHours = 2) => {
+export const countRecentRequestsModel = async (email, timeframeInHours = 2) => {
   const [rows] = await db.query(
     `SELECT COUNT(*) AS request_count
       FROM password_reset_requests
@@ -50,7 +50,7 @@ export const countRecentRequests = async (email, timeframeInHours = 2) => {
 };
 
 //Count recent verification attempts
-export const countRecentAttempts = async (email, timeframeInHours = 2) => {
+export const countRecentAttemptsModel = async (email, timeframeInHours = 2) => {
   const [rows] = await db.query(`
       SELECT COUNT(*) AS attempt_count
       FROM password_reset_attempts
@@ -60,7 +60,7 @@ export const countRecentAttempts = async (email, timeframeInHours = 2) => {
 };
 
 //Record verification attempt
-export const saveVerificationAttempt = async (email, success) => {
+export const saveVerificationAttemptModel = async (email, success) => {
     await db.query(`
       INSERT INTO password_reset_attempts (email, success, created_at)
       VALUES (?, ?, NOW())

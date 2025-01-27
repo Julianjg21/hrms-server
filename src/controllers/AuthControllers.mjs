@@ -1,15 +1,15 @@
 import {
-  findUserByEmail,
-  findUserByIdentification,
+  findUserByEmailModel,
+  findUserByIdentificationModel,
 } from "../models/UserModel.mjs";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
-import { findUserPermission } from "../models/RoleModel.mjs";
+import { findUserPermissionModel } from "../models/RoleModel.mjs";
 dotenv.config();
 
 //verify keys and create access token
-export const loginUser = async (req, res) => {
+export const loginUserController = async (req, res) => {
   //extract data sent by the client
   const { identification, email, password, typeUser } = req.body;
   //verify the existence of the data received
@@ -26,7 +26,7 @@ export const loginUser = async (req, res) => {
     case "manager":
       try {
         //search for user by email in the database
-        const findByEmail = await findUserByEmail(email);
+        const findByEmail = await findUserByEmailModel(email);
         if (!findByEmail) {
           return res.status(404).json({ message: "User not found" });
         }
@@ -54,14 +54,19 @@ export const loginUser = async (req, res) => {
         );
 
         //get permissions from the user's role
-        const permissions = await findUserPermission(findByEmail.user_id);
+        const permissions = await findUserPermissionModel(findByEmail.user_id);
         if (permissions.length === 0) {
           return res.status(404).json({
             message: "No permissions found for this  role of the user",
           });
         }
         //send token to client
-        res.json({ token, permissions, userId: findByEmail.user_id });
+        res.json({
+          token,
+          permissions,
+          userId: findByEmail.user_id,
+          email: findByEmail.email,
+        });
       } catch (error) {
         //if an error occurs in the function process, it will be sent as a response to the client
         res.status(500).json({ message: "Server error", error: error.message });
@@ -71,7 +76,7 @@ export const loginUser = async (req, res) => {
     case "employee":
       try {
         //search for user by  identification in the database
-        const findByIdentification = await findUserByIdentification(
+        const findByIdentification = await findUserByIdentificationModel(
           identification
         );
 
@@ -101,7 +106,7 @@ export const loginUser = async (req, res) => {
         );
 
         //get permissions from the user's role
-        const permissions = await findUserPermission(
+        const permissions = await findUserPermissionModel(
           findByIdentification.user_id
         );
         if (permissions.length === 0) {
@@ -109,7 +114,6 @@ export const loginUser = async (req, res) => {
             message: "No permissions found for this  role of the user",
           });
         }
-        console.log("employee", permissions);
 
         //send token to client
         res.json({ token, permissions, userId: findByIdentification.user_id });
@@ -121,4 +125,39 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export default loginUser;
+export const verifyUserPasswordController = async (req, res) => {
+  const { email, password } = req.body;
+  console.log(email, password);
+  // Validar que se reciban los campos necesarios
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
+  try {
+    //Search the user by email
+    const user = await findUserByEmailModel(email);
+    if (!user) {
+      //Do not reveal whether the user exists or not
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    //Verify the password entered with the one registered in the database
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+
+    if (!isMatch) {
+      //Incorrect password
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    //If everything is fine, respond successfully
+    return res.status(200).json({ message: "Authentication successful" });
+  } catch (error) {
+    console.error("Error during password verification:", error.message);
+    return res.status(500).json({
+      message: "Error validating the password",
+      error: error.message,
+    });
+  }
+};
+
+export default loginUserController;

@@ -127,7 +127,6 @@ export const loginUserController = async (req, res) => {
 
 export const verifyUserPasswordController = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
   // Validar que se reciban los campos necesarios
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });

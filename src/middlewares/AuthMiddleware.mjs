@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 //verify tokens
-export const verifyToken = (req, res) => {
+export const verifyTokenMiddleware = (req, res) => {
   // Extract the token from the authorization header
   //If the Authorization header is missing or improperly formatted, the token will be undefined
   const token = req.headers.authorization?.split(" ")[1];
@@ -28,4 +28,4 @@ export const verifyToken = (req, res) => {
   }
 };
 
-export default verifyToken;
+export default verifyTokenMiddleware;

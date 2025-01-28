@@ -1,9 +1,9 @@
-import { findUserPermission, getAllPermissions } from "../models/RoleModel.mjs";
+import { findUserPermissionModel, getAllPermissionsModel } from "../models/RoleModel.mjs";
 export const getUserRoleController = async (req, res) => {
   const { roleId } = req.params;
   try {
 //Find the permissions of a role
-    const permissions = await findUserPermission(roleId);
+    const permissions = await findUserPermissionModel(roleId);
     if (permissions.length === 0) {
       return res
         .status(404)
@@ -20,7 +20,7 @@ export const getUserRoleController = async (req, res) => {
 //Get all permissions
 export const getAllPermissionsControllers = async (req, res) => {
   try {
-    const allPermissions = await getAllPermissions();
+    const allPermissions = await getAllPermissionsModel();
     res.status(200).json(allPermissions);
     if (allPermissions.length === 0) {
       return res.status(404).json({ message: "No se encontraron permisos" });

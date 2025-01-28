@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { findUserPermission } from "../models/RoleModel.mjs";
+import { findUserPermissionModel } from "../models/RoleModel.mjs";
 
 //set env variables
 dotenv.config();
@@ -25,7 +25,7 @@ export const verifyTokenAndPermisions = async (req, res, next) => {
     req.user_type = decoded.user_type;
     //If the token is correct, send the access confirmation
     //get permissions from the user's role
-    const UserPermissions = await findUserPermission(userId);
+    const UserPermissions = await findUserPermissionModel(userId);
     if (UserPermissions.length === 0) {
       return res.status(404).json({
         message: "No permissions found for the roles of this user",

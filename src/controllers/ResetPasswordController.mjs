@@ -1,19 +1,18 @@
-import { findUserByEmail } from "../models/UserModel.mjs";
+import { findUserByEmailModel } from "../models/UserModel.mjs";
 import {
-  saveResetRequest,
-  verifyCode,
-  invalidateRequestsByEmail,
-  updateUserPassword,
-  countRecentRequests,
-  countRecentAttempts,
-  saveVerificationAttempt,
+  saveResetRequestModel,
+  verifyCodeModel,
+  invalidateRequestsByEmailModel,
+  updateUserPasswordModel,
+  countRecentRequestsModel,
+  countRecentAttemptsModel,
+  saveVerificationAttemptModel,
 } from "../models/ResetPasswordModel.mjs";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 
 export const findEmailController = async (req, res) => {
   const { email } = req.body;
-  console.log("findEmailController", email);
   if (!email) {
     return res.status(400).json({ message: "El correo es requerido." });
   }
@@ -29,7 +28,7 @@ export const findEmailController = async (req, res) => {
     }
 
     // Verificar solicitudes recientes
-    const recentRequests = await countRecentRequests(email, 2);
+    const recentRequests = await countRecentRequestsModel(email, 2);
     if (recentRequests >= 4) {
       return res.status(429).json({
         message:
@@ -40,7 +39,7 @@ export const findEmailController = async (req, res) => {
     const code = Math.floor(1000000 + Math.random() * 9000000).toString(); //Generate a 7 digit number
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); //Expires in 10 minutes
 
-    await saveResetRequest(email, code, expiresAt);
+    await saveResetRequestModel(email, code, expiresAt);
     // Step 4: Enviar correo con el código de restablecimiento
      try {
       const transporter = nodemailer.createTransport({
@@ -50,7 +49,7 @@ export const findEmailController = async (req, res) => {
         secure: true,
         auth: {
           user: "julianjimenez2128@gmail.com",
-          pass: "",
+          pass: "nivu qqds gvxa oaca",
         },
       });
 
@@ -83,7 +82,6 @@ export const findEmailController = async (req, res) => {
         error: error.message,
       });
     }
-    console.log(code);
     res
       .status(200)
       .json({ message: "Codigo enviado si el correo esta registrado." });
@@ -95,7 +93,6 @@ export const findEmailController = async (req, res) => {
 //verify the security code
 export const verifyCodeController = async (req, res) => {
   const { email, code } = req.body;
-  console.log("verifyCodeController", email, code);
   if (!email || !code) {
     return res
       .status(400)
@@ -104,7 +101,7 @@ export const verifyCodeController = async (req, res) => {
 
   try {
     // Verificar intentos recientes
-    const recentAttempts = await countRecentAttempts(email, 2);
+    const recentAttempts = await countRecentAttemptsModel(email, 2);
     if (recentAttempts >= 4) {
       return res.status(429).json({
         message:
@@ -112,10 +109,10 @@ export const verifyCodeController = async (req, res) => {
       });
     }
 
-    const isValid = await verifyCode(email, code);
+    const isValid = await verifyCodeModel(email, code);
 
     // Registrar intento
-    await saveVerificationAttempt(email, isValid);
+    await saveVerificationAttemptModel(email, isValid);
     if (!isValid) {
       return res.status(400).json({ message: "Codigo invalido o expirado." });
     }
@@ -130,7 +127,6 @@ export const verifyCodeController = async (req, res) => {
 //resetear contraseña
 
 export const resetPasswordController = async (req, res) => {
-  console.log("resetPasswordController");
   const { email, newPassword } = req.body;
   if (!email || !newPassword) {
     return res
@@ -140,8 +136,8 @@ export const resetPasswordController = async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await updateUserPassword(email, hashedPassword);
-    await invalidateRequestsByEmail(email); //Delete previous password reset requests
+    await updateUserPasswordModel(email, hashedPassword);
+    await invalidateRequestsByEmailModel(email); //Delete previous password reset requests
 
     res.status(200).json({ message: "Contraseña cambiada exitosamente." });
   } catch (error) {

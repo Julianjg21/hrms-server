@@ -31,7 +31,7 @@ export const registerUserModel = async (userData, userDetails) => {
       bank,
       account_number,
       type_identification,
-      employee_type
+      employee_type,
     } = userDetails;
 
     //insert new user
@@ -42,7 +42,7 @@ export const registerUserModel = async (userData, userDetails) => {
 
     //Get the ID of the newly created user
     const user_id = rows.insertId;
-  //Insert new user data
+    //Insert new user data
     await db.query(
       "INSERT INTO user_details (user_id, user_names, last_names, phone_number, identification, birth_date, bank, account_number, type_identification, employee_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
@@ -55,18 +55,20 @@ export const registerUserModel = async (userData, userDetails) => {
         bank,
         account_number,
         type_identification,
-        employee_type
+        employee_type,
       ]
     );
-
-    console.log("Usuario y detalles insertados correctamente.");
   } catch (error) {
     console.error("Error al registrar el usuario:", error.message);
     throw error; //Throw the error to handle it out of scope
   }
 };
 
-export const searchUsersModel = async (user_names, type_identification, identification) => {
+export const searchUsersModel = async (
+  user_names,
+  type_identification,
+  identification
+) => {
   try {
     //search the user by name, type of identification and identification
     const [rows] = await db.query(
@@ -76,14 +78,14 @@ export const searchUsersModel = async (user_names, type_identification, identifi
     //return the user data
     return rows;
   } catch (error) {
-    console.error("Error al buscar el usuario:", error.message);
+    console.error("Error when looking for the user:", error.message);
     throw error;
   }
-}
+};
 
 export const updateUserDataModel = async (userData, userDetails, user_type) => {
   try {
-    const { email  } = userData;
+    const { email } = userData;
     const {
       user_names,
       last_names,
@@ -94,7 +96,7 @@ export const updateUserDataModel = async (userData, userDetails, user_type) => {
       account_number,
       type_identification,
       employee_type,
-      user_id
+      user_id,
     } = userDetails;
 
     //update user data
@@ -116,21 +118,35 @@ export const updateUserDataModel = async (userData, userDetails, user_type) => {
         account_number,
         type_identification,
         employee_type,
-        user_id
+        user_id,
       ]
     );
-
-    console.log("Usuario y detalles actualizados correctamente.");
   } catch (error) {
-    console.error("Error al actualizar el usuario:", error.message);
+    console.error("Error when updating the user:", error.message);
     throw error;
   }
-}
+};
 export const deleteUserModel = async (id) => {
   try {
     await db.query("DELETE FROM users WHERE user_id = ?", [id]);
   } catch (error) {
-    console.error("Error al eliminar el usuario:", error.message);
+    console.error("Error deleting the user:", error.message);
     throw error;
   }
-}
+};
+
+export const getEmployees = async (employee_type) => {
+  try {
+    const [rows] = await db.query(
+      "SELECT usr.user_id, usr.email, usr.user_type, ud.user_names, ud.last_names, ud.phone_number, ud.identification, ud.birth_date, ud.bank, ud.account_number, ud.type_identification, ud.employee_type FROM users usr INNER JOIN user_details ud ON usr.user_id = ud.user_id where ud.employee_type  = ?",
+      [employee_type]
+    );
+    return rows;
+  } catch (error) {
+    console.log(
+      "Error trying to look for employees in the database",
+      error.emssage
+    );
+    throw error;
+  }
+};

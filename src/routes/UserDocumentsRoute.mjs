@@ -12,19 +12,19 @@ const upload = multer({
 });
 
 router.post(
-  "/uploadFiles",
+  "/uploadUserDocuments",
   upload.single("file"), //multer.single to handle a single file
   verifyTokenAndPermisions, //middleware to verify the token and permissions
   uploadFilesController //controller to upload the file
 );
 
 router.post(
-  "/getFiles",
+  "/getUserDocuments",
   verifyTokenAndPermisions, //middleware to verify the token and permissions
   getFilesController //controller to get the files
 );
 router.post(
-  "/downloadUserDocument",
+  "/downloadUserDocuments",
   verifyTokenAndPermisions, //middleware to verify the token and permissions
   downloadUserDocumentController //controller to download the file
 );

@@ -8,9 +8,13 @@ dotenv.config();
 //verify tokens
 export const verifyTokenAndPermisions = async (req, res, next) => {
   // Extract the token from the authorization header
-  //If the Authorization header is missing or improperly formatted, the token will be undefined
   const token = req.headers.authorization?.split(" ")[1];
-  const { permissions, userId } = req.body;
+  let { permissions, userId } = req.body;
+//convert token into json format if it is in string format
+  if (typeof permissions === 'string') {
+    permissions = JSON.parse(permissions);
+  }
+
   //check if the token is missing
   if (!token || permissions.length === 0 || !userId) {
     return res

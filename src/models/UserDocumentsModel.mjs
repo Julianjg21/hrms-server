@@ -46,12 +46,12 @@ export const getFilesModel = async (user_id) => {
   }
 };
 
-export const downloadUserDocumentModel = async (id) => {
+export const downloadUserDocumentModel = async (documentId) => {
   try {
 //Request the File to the database
     const rows = await db.query(
       "SELECT file_name, file_type, file_data FROM user_documents WHERE id = ?",
-      [id]
+      [documentId]
     );
     return rows[0];
   } catch (error) {

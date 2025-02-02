@@ -131,7 +131,6 @@ export const verifyUserPasswordController = async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
   }
-
   try {
     //Search the user by email
     const user = await findUserByEmailModel(email);
@@ -147,7 +146,6 @@ export const verifyUserPasswordController = async (req, res) => {
       //Incorrect password
       return res.status(401).json({ message: "Invalid credentials" });
     }
-
     //If everything is fine, respond successfully
     return res.status(200).json({ message: "Authentication successful" });
   } catch (error) {

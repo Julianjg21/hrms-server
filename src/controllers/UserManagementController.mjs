@@ -51,7 +51,7 @@ export const createUsersController = async (req, res) => {
 };
 
 export const searchUsersController = async (req, res) => {
-  const { user_names, type_identification, identification } = req.body;
+  const { user_names, type_identification, identification } = req.query;
   try {
     const user = await searchUsersModel(
       user_names,
@@ -69,6 +69,7 @@ export const searchUsersController = async (req, res) => {
 
 export const editUserDataController = async (req, res) => {
   const { userData, userDetails } = req.body;
+  const user_id = req.params.id;
   let user_type = "";
   //Check the user type
   switch (userDetails.employee_type) {
@@ -90,7 +91,7 @@ export const editUserDataController = async (req, res) => {
       break;
   }
   try {
-    await updateUserDataModel(userData, userDetails, user_type);
+    await updateUserDataModel(userData, userDetails, user_type, user_id);
     res.status(200).json({ message: "Usuario actualizado correctamente." });
   } catch (error) {
     res.status(500).json({
@@ -113,7 +114,7 @@ export const deleteUserController = async (req, res) => {
 };
 
 export const searchEmployeesController = async (req, res) => {
-  const { employee_type } = req.body;
+  const { employee_type } = req.query;
   try {
     const user = await getEmployees(employee_type);;
     res.status(200).json({ message: "Usuarios encontrados", user });

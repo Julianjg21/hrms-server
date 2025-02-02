@@ -83,7 +83,7 @@ export const searchUsersModel = async (
   }
 };
 
-export const updateUserDataModel = async (userData, userDetails, user_type) => {
+export const updateUserDataModel = async (userData, userDetails, user_type, user_id) => {
   try {
     const { email } = userData;
     const {
@@ -96,7 +96,6 @@ export const updateUserDataModel = async (userData, userDetails, user_type) => {
       account_number,
       type_identification,
       employee_type,
-      user_id,
     } = userDetails;
 
     //update user data

@@ -5,9 +5,9 @@ import { verifyTokenAndPermisions } from "../middlewares/VerifyUserAndPermission
 const router = express.Router();
 
 router.post("/createUsers", verifyTokenAndPermisions, createUsersController);
-router.post("/searchUsers", verifyTokenAndPermisions, searchUsersController);
-router.post("/editUserData", verifyTokenAndPermisions, editUserDataController);
-router.post("/deleteUser/:id", verifyTokenAndPermisions, deleteUserController);
-router.post("/searchEmployees/", verifyTokenAndPermisions, searchEmployeesController);
+router.get("/searchUsers", verifyTokenAndPermisions, searchUsersController);
+router.put("/editUserData/:id", verifyTokenAndPermisions, editUserDataController);
+router.delete("/deleteUser/:id", verifyTokenAndPermisions, deleteUserController);
+router.get("/searchEmployees", verifyTokenAndPermisions, searchEmployeesController);
 
 export default router;

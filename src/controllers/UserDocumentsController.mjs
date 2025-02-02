@@ -31,7 +31,7 @@ export const uploadFilesController = async (req, res) => {
 };
 
 export const getFilesController = async (req, res) => {
-  const { user_id } = req.body;
+  const { user_id } = req.query;
   try {
     const files = await getFilesModel(user_id); //Obtain requested files according to your user ID
     return res.status(200).json(files);
@@ -41,9 +41,9 @@ export const getFilesController = async (req, res) => {
 };
 
 export const downloadUserDocumentController = async (req, res) => {
-  const { id } = req.body;
+  const { documentId } = req.params;
   try {
-    const response = await downloadUserDocumentModel(id);
+    const response = await downloadUserDocumentModel(documentId);
     if (response.length === 0) {
       return res.status(404).json({ message: "File not found." });
     }

@@ -18,13 +18,13 @@ router.post(
   uploadFilesController //controller to upload the file
 );
 
-router.post(
+router.get(
   "/getUserDocuments",
   verifyTokenAndPermisions, //middleware to verify the token and permissions
   getFilesController //controller to get the files
 );
-router.post(
-  "/downloadUserDocuments",
+router.get(
+  "/downloadUserDocuments/:documentId",
   verifyTokenAndPermisions, //middleware to verify the token and permissions
   downloadUserDocumentController //controller to download the file
 );

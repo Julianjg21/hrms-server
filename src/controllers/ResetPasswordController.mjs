@@ -1,4 +1,5 @@
 import { findUserByEmailModel } from "../models/UserModel.mjs";
+import dotenv from "dotenv";
 import {
   saveResetRequestModel,
   verifyCodeModel,
@@ -41,15 +42,15 @@ export const findEmailController = async (req, res) => {
 
     await saveResetRequestModel(email, code, expiresAt);
     // Step 4: Enviar correo con el código de restablecimiento
-     try {
+    try {
       const transporter = nodemailer.createTransport({
         service: "gmail",
         host: "smtp.gmail.com",
         port: 465,
         secure: true,
         auth: {
-          user: "julianjimenez2128@gmail.com",
-          pass: "nivu qqds gvxa oaca",
+          user: process.env.NODEMAIL_USER,
+          pass: process.env.NODEMAIL_PASS,
         },
       });
 
@@ -129,9 +130,7 @@ export const verifyCodeController = async (req, res) => {
 export const resetPasswordController = async (req, res) => {
   const { email, newPassword } = req.body;
   if (!email || !newPassword) {
-    return res
-      .status(400)
-      .json({ message: "Nueva contraseña requerida." });
+    return res.status(400).json({ message: "Nueva contraseña requerida." });
   }
 
   try {

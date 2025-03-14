@@ -25,8 +25,19 @@ export const loginUserController = async (req, res) => {
     case "administrator":
     case "manager":
       try {
-        //search for user by email in the database
-        const findByEmail = await findUserByEmailModel(email);
+        let findByEmail;
+
+        try {
+          //search for user by email in the database
+          findByEmail = await findUserByEmailModel(email);
+        } catch (dbError) {
+          Sentry.captureException(dbError); // Capture unexpected database errors
+          return res.status(500).json({
+            message:
+              "Database error encountered while searching for the email in the database.",
+          });
+        }
+
         if (!findByEmail) {
           return res.status(404).json({ message: "User not found" });
         }
@@ -68,6 +79,7 @@ export const loginUserController = async (req, res) => {
           email: findByEmail.email,
         });
       } catch (error) {
+        Sentry.captureException(error);
         //if an error occurs in the function process, it will be sent as a response to the client
         res.status(500).json({ message: "Server error", error: error.message });
       }
@@ -75,10 +87,20 @@ export const loginUserController = async (req, res) => {
     //search user by identification in the database
     case "employee":
       try {
-        //search for user by  identification in the database
-        const findByIdentification = await findUserByIdentificationModel(
-          identification
-        );
+        let findByIdentification;
+
+        try {
+          //search for user by  identification in the database
+          findByIdentification = await findUserByIdentificationModel(
+            identification
+          );
+        } catch (dbError) {
+          Sentry.captureException(dbError); // Capture unexpected database errors
+          return res.status(500).json({
+            message:
+              "Database error encountered while searching for the identification in the database.",
+          });
+        }
 
         if (!findByIdentification) {
           return res.status(404).json({ message: "User not found" });
@@ -118,6 +140,7 @@ export const loginUserController = async (req, res) => {
         //send token to client
         res.json({ token, permissions, userId: findByIdentification.user_id });
       } catch (error) {
+        Sentry.captureException(error);
         //if an error occurs in the function process, it will be sent as a response to the client
         res.status(500).json({ message: "Server error", error: error.message });
       }
@@ -127,13 +150,23 @@ export const loginUserController = async (req, res) => {
 
 export const verifyUserPasswordController = async (req, res) => {
   const { email, password } = req.body;
-  // Validar que se reciban los campos necesarios
+//Validate that the necessary fields are received
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
   }
   try {
-    //Search the user by email
-    const user = await findUserByEmailModel(email);
+    let user;
+    try {
+       //Search the user by email
+     user = await findUserByEmailModel(email);
+    } catch (dbError) {
+      Sentry.captureException(dbError);
+      return res.status(500).json({
+        message:
+          "Database error encountered while searching for the email in the database.",
+      });
+    }
+
     if (!user) {
       //Do not reveal whether the user exists or not
       return res.status(401).json({ message: "Invalid credentials" });
@@ -149,7 +182,7 @@ export const verifyUserPasswordController = async (req, res) => {
     //If everything is fine, respond successfully
     return res.status(200).json({ message: "Authentication successful" });
   } catch (error) {
-    console.error("Error during password verification:", error.message);
+    Sentry.captureException(error);
     return res.status(500).json({
       message: "Error validating the password",
       error: error.message,

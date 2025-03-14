@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "The server receives and responds to client requests for our hrms software.",
   "dependencies": {
+    "@sentry/node": "^9.5.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

@@ -20,7 +20,7 @@ export const findEmailController = async (req, res) => {
 
   try {
     //Verify if the email is registered
-    const emailExists = await findUserByEmail(email);
+    const emailExists = await findUserByEmailModel(email);
     if (!emailExists) {
       return res.status(404).json({
         message:

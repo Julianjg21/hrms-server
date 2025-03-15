@@ -44,6 +44,7 @@ export const createUsersController = async (req, res) => {
       .status(200)
       .json({ message: "usuario registrado correctamente." });
   } catch (error) {
+    Sentry.captureException(error);
     res
       .status(500)
       .json({ message: "Error al registrar el usuario", error: error.message });
@@ -60,6 +61,7 @@ export const searchUsersController = async (req, res) => {
     );
     res.status(200).json({ message: "Usuario encontrado", user });
   } catch (error) {
+    Sentry.captureException(error);
     res.status(500).json({
       message: "Error al buscar el usuario",
       error: error.message,
@@ -94,6 +96,7 @@ export const editUserDataController = async (req, res) => {
     await updateUserDataModel(userData, userDetails, user_type, user_id);
     res.status(200).json({ message: "Usuario actualizado correctamente." });
   } catch (error) {
+    Sentry.captureException(error);
     res.status(500).json({
       message: "Error al actualizar el usuario",
       error: error.message,
@@ -107,6 +110,7 @@ export const deleteUserController = async (req, res) => {
     await deleteUserModel(id);
     res.status(200).json({ message: "Usuario eliminado correctamente." });
   } catch (error) {
+    Sentry.captureException(error);
     res
       .status(500)
       .json({ message: "Error al eliminar el usuario", error: error.message });
@@ -119,6 +123,7 @@ export const searchEmployeesController = async (req, res) => {
     const user = await getEmployees(employee_type);;
     res.status(200).json({ message: "Usuarios encontrados", user });
   } catch (error) {
+    Sentry.captureException(error);
     res.status(500).json({
       message: "Error al buscar el usuario",
       error: error.message,

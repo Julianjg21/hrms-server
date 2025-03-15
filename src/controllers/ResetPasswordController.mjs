@@ -77,6 +77,7 @@ export const findEmailController = async (req, res) => {
         message: "Código de restablecimiento enviado al correo.",
       });
     } catch (error) {
+      Sentry.captureException(error);
       // Si ocurre un error al enviar el correo
       return res.status(500).json({
         message: "Error al enviar el correo de restablecimiento",
@@ -87,6 +88,7 @@ export const findEmailController = async (req, res) => {
       .status(200)
       .json({ message: "Codigo enviado si el correo esta registrado." });
   } catch (error) {
+    Sentry.captureException(error);
     res.json({ message: error.message });
   }
 };
@@ -121,6 +123,7 @@ export const verifyCodeController = async (req, res) => {
       .status(200)
       .json({ message: "Código verificado. Procede a cambiar tu contraseña." });
   } catch (error) {
+    Sentry.captureException(error);
     res.json({ message: error.message });
   }
 };
@@ -140,6 +143,7 @@ export const resetPasswordController = async (req, res) => {
 
     res.status(200).json({ message: "Contraseña cambiada exitosamente." });
   } catch (error) {
+    Sentry.captureException(error);
     res.json({ message: error.message });
   }
 };

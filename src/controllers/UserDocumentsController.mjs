@@ -74,7 +74,7 @@ export const downloadUserDocumentController = async (req, res) => {
     res.send(buffer);
   } catch (error) {
     //If an error occurs, print it on the console and return an error 500
-    console.error("Error when downloading the file:", error);
+    Sentry.captureException(error);
     return res.status(500).json({
       message: "Error when downloading the file in the controller.",
       error: error.message,
@@ -122,8 +122,7 @@ export const generatePayrollPdfController = async (req, res) => {
     // 🔹 Send the PDF buffer to be displayed in the browser
     res.send(buffer);
   } catch (error) {
-    // 🔹 Handle errors and send a 500 status with an error message
-    console.error("Error generating and sending the PDF:", error);
+    Sentry.captureException(error);
     res.status(500).json({ message: "Error generating and sending the PDF" });
   }
 };
@@ -141,6 +140,7 @@ export const getUserPayrollExtractsController = async (req, res) => {
     return res.status(200).json(files);
   } catch (error) {
     // 🔹 Handle errors and send a 500 status with an error message
+    Sentry.captureException(error);
     return res.status(500).json({ message: "Error obtaining the files." });
   }
 };
@@ -182,7 +182,7 @@ export const downloadUserPayrollExtracts = async (req, res) => {
     return res.send(buffer);
   } catch (error) {
     // 🔹 Handle errors, log them in the console, and send a 500 status with an error message
-    console.error("Error when downloading the file:", error);
+    Sentry.captureException(error);
     return res.status(500).json({
       message: "Error when downloading the file in the controller.",
       error: error.message,

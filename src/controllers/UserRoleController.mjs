@@ -12,6 +12,7 @@ export const getUserRoleController = async (req, res) => {
 
     res.status(200).json(permissions);
   } catch (error) {
+    Sentry.captureException(error);
     res
       .status(500)
       .json({ message: "Error al obtener permisos", error: error.message });
@@ -26,6 +27,7 @@ export const getAllPermissionsControllers = async (req, res) => {
       return res.status(404).json({ message: "No se encontraron permisos" });
     }
   } catch (error) {
+    Sentry.captureException(error);
     res
       .status(500)
       .json({ message: "Error al obtener permisos", error: error.message });

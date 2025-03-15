@@ -540,7 +540,7 @@ const CreatePayrollPdf = (payrollData) => {
       });
     });
   } catch (error) {
-    console.error("Error creating the PDF:", error);
+    Sentry.captureException(error);
     throw error; // Relanzar el error para que pueda ser manejado externamente
   }
 };

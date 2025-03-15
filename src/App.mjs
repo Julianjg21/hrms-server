@@ -1,9 +1,9 @@
 import "./SentryConfig.mjs";
-import * as Sentry from "@sentry/node"
+import * as Sentry from "@sentry/node";
 import express from "express";
 import cors from "cors";
 import AuthRoutes from "./routes/AuthRoutes.mjs";
-import UserRoleRoutes from "./routes/UserRoleRoutes.mjs"
+import UserRoleRoutes from "./routes/UserRoleRoutes.mjs";
 import db from "./config/Database.mjs";
 import ResetPasswordRoutes from "./routes/ResetPasswordRoutes.mjs";
 import UserManagement from "./routes/UserManagementRoutes.mjs";
@@ -20,7 +20,6 @@ App.use("/requestUserRole", UserRoleRoutes);
 App.use("/requestUserManagement", UserManagement);
 App.use("/requestUserDocuments", UserDocuments);
 
-
 // Register Sentry's error handler middleware
 Sentry.setupExpressErrorHandler(App);
 
@@ -30,11 +29,19 @@ Sentry.setupExpressErrorHandler(App);
     const connection = await db.getConnection();
     console.log("Connection to the database established!!");
     connection.release();
-  } catch (err) {
-    console.error("Database connection error:", err);
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: { module: "database-connection" },
+      extra: { message: "Error trying to connect the database" },
+      level: "error",
+    });
   }
 })();
-db.on("error", (err) => {
-  console.error("Database connection error:", err);
+db.on("error", (error) => {
+  Sentry.captureException(error, {
+    tags: { module: "server-connection" },
+    extra: { message: "Error trying to create the server connection" },
+    level: "error",
+  });
 });
 export default App;

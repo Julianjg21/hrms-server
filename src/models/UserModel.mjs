@@ -59,7 +59,6 @@ export const registerUserModel = async (userData, userDetails) => {
       ]
     );
   } catch (error) {
-    console.error("Error al registrar el usuario:", error.message);
     throw error; //Throw the error to handle it out of scope
   }
 };
@@ -78,7 +77,6 @@ export const searchUsersModel = async (
     //return the user data
     return rows;
   } catch (error) {
-    console.error("Error when looking for the user:", error.message);
     throw error;
   }
 };
@@ -121,7 +119,6 @@ export const updateUserDataModel = async (userData, userDetails, user_type, user
       ]
     );
   } catch (error) {
-    console.error("Error when updating the user:", error.message);
     throw error;
   }
 };
@@ -129,7 +126,6 @@ export const deleteUserModel = async (id) => {
   try {
     await db.query("DELETE FROM users WHERE user_id = ?", [id]);
   } catch (error) {
-    console.error("Error deleting the user:", error.message);
     throw error;
   }
 };
@@ -142,10 +138,6 @@ export const getEmployees = async (employee_type) => {
     );
     return rows;
   } catch (error) {
-    console.log(
-      "Error trying to look for employees in the database",
-      error.emssage
-    );
     throw error;
   }
 };

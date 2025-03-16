@@ -27,7 +27,6 @@ export const uploadFilesModel = async (
       );
     }
   } catch (error) {
-    console.log("Error al subir el archivo", error);
     throw error;
   }
 };
@@ -41,7 +40,6 @@ export const getDocumentsModel = async (user_id) => {
     );
     return files;
   } catch (error) {
-    console.log("Error obtaining files", error);
     throw error;
   }
 };
@@ -55,7 +53,6 @@ export const downloadUserDocumentModel = async (documentId) => {
     );
     return rows[0];
   } catch (error) {
-    console.error("Error when downloading the file in the Model:", error);
     throw error;
   }
 };
@@ -69,7 +66,6 @@ export const savePayrollPdfModel = async (user_id, pdfData) => {
       [file_name, buffer, user_id, payrollExtractDate]
     );
   } catch (error) {
-    console.error("Error al intentar guardar el pdf", error);
     throw error;
   }
 };
@@ -83,7 +79,6 @@ export const getUserPayrollExtractsModel = async (user_id) => {
     );
     return files[0];
   } catch (error) {
-    console.log("Error obtaining files", error);
     throw error;
   }
 };
@@ -97,7 +92,6 @@ export const downloadUserPayrollExtractsModel = async (payrollExtractId) => {
     );
     return rows[0];
   } catch (error) {
-    console.error("Error when downloading the file in the Model:", error);
     throw error;
   }
 };

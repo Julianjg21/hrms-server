@@ -3,6 +3,7 @@ import {
   findUserByIdentificationModel,
 } from "../models/UserModel.mjs";
 import jwt from "jsonwebtoken";
+import * as Sentry from "@sentry/node";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import { findUserPermissionModel } from "../models/RoleModel.mjs";

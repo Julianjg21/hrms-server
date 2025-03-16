@@ -1,4 +1,5 @@
 import { findUserPermissionModel, getAllPermissionsModel } from "../models/RoleModel.mjs";
+import * as Sentry from "@sentry/node";
 export const getUserRoleController = async (req, res) => {
   const { roleId } = req.params;
   try {

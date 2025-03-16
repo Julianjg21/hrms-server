@@ -1,5 +1,6 @@
 import { findUserByEmailModel } from "../models/UserModel.mjs";
 import dotenv from "dotenv";
+import * as Sentry from "@sentry/node";
 import {
   saveResetRequestModel,
   verifyCodeModel,

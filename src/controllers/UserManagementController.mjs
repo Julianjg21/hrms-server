@@ -5,6 +5,7 @@ import {
   deleteUserModel,
   getEmployees,
 } from "../models/UserModel.mjs";
+import * as Sentry from "@sentry/node";
 import bcrypt from "bcrypt";
 export const createUsersController = async (req, res) => {
   const { userData, userDetails } = req.body;

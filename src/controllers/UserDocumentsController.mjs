@@ -6,6 +6,7 @@ import {
   getUserPayrollExtractsModel,
   downloadUserPayrollExtractsModel,
 } from "../models/UserDocumentsModel.mjs";
+import * as Sentry from "@sentry/node";
 import CreatePayrollPdf from "../services/CreatePayrollPdf.mjs";
 export const uploadFilesController = async (req, res) => {
   //Verify if a file has been uploaded
@@ -28,6 +29,7 @@ export const uploadFilesController = async (req, res) => {
     //If it has risen correctly, returns a successful message
     return res.status(200).json({ message: "Archivo subido correctamente." });
   } catch (error) {
+    Sentry.captureException(error);
     //If there has been an error, return a 500 error
     return res.status(500).json({ message: "Error trying to save the file" });
   }
@@ -39,6 +41,7 @@ export const getDocumentsController = async (req, res) => {
     const files = await getDocumentsModel(user_id); //Obtain requested files according to your user ID
     return res.status(200).json(files);
   } catch (error) {
+    Sentry.captureException(error);
     return res.status(500).json({ message: "Error obtaining the files." });
   }
 };

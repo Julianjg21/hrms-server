@@ -2,7 +2,7 @@ import PDFDocument from "pdfkit";
 import { PassThrough } from "stream";
 import path from "path";
 import { fileURLToPath } from "url";
-
+import * as Sentry from "@sentry/node";
 const CreatePayrollPdf = (payrollData) => {
   try {
     //create a new PDF document

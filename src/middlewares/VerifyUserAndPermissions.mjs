@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import * as Sentry from "@sentry/node";
 import { findUserPermissionModel } from "../models/RoleModel.mjs";
 
 //set env variables

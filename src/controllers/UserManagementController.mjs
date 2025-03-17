@@ -42,9 +42,26 @@ export const createUsersController = async (req, res) => {
     //Register the user
     await registerUserModel(newUserData, userDetails);
     return res
-      .status(200)
+      .status(201)
       .json({ message: "usuario registrado correctamente." });
   } catch (error) {
+    //Error If duplicate data is found in Database
+    if (error.code === "ER_DUP_ENTRY") {
+      //Extract the duplicate field of the error message
+      const match = error.sqlMessage.match(/for key '(.+?)'/);
+      let field = "desconocido";
+      if (match) {
+        const keyName = match[1];
+        if (keyName.includes("email")) field = "El correo electrónico";
+        if (keyName.includes("account_number")) field = "El N.cuenta";
+        if (keyName.includes("identification")) field = "la Identificación";
+      }
+
+      return res.status(400).json({
+        message: `${field} se encuentra registrado en otro usuario.`,
+        error: error.message,
+      });
+    }
     Sentry.captureException(error);
     res
       .status(500)
@@ -121,7 +138,7 @@ export const deleteUserController = async (req, res) => {
 export const searchEmployeesController = async (req, res) => {
   const { employee_type } = req.query;
   try {
-    const user = await getEmployees(employee_type);;
+    const user = await getEmployees(employee_type);
     res.status(200).json({ message: "Usuarios encontrados", user });
   } catch (error) {
     Sentry.captureException(error);

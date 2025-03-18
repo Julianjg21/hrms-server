@@ -142,10 +142,10 @@ export const resetPasswordController = async (req, res) => {
     await updateUserPasswordModel(email, hashedPassword);
     await invalidateRequestsByEmailModel(email); //Delete previous password reset requests
 
-    res.status(200).json({ message: "Contraseña cambiada exitosamente." });
+   return  res.status(200).json({ message: "Contraseña cambiada exitosamente." });
   } catch (error) {
     Sentry.captureException(error);
-    res.json({ message: error.message });
+    res.status(500).json({ message: "Error al cambiar la contraseña.", error: error.message });
   }
 };
 

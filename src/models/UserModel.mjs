@@ -20,7 +20,11 @@ export const findUserByIdentificationModel = async (identification) => {
 };
 
 export const registerUserModel = async (userData, userDetails) => {
+  const connection = await db.getConnection(); //Obtain a manually connection
+
   try {
+    await connection.beginTransaction(); //Start transaction
+
     const { email, password_hash, user_type } = userData;
     const {
       user_names,
@@ -34,16 +38,16 @@ export const registerUserModel = async (userData, userDetails) => {
       employee_type,
     } = userDetails;
 
-    //insert new user
-    const [rows] = await db.query(
+    //Insert user in 'users'
+    const [rows] = await connection.query(
       "INSERT INTO users (email, password_hash, user_type) VALUES (?, ?, ?)",
       [email, password_hash, user_type]
     );
 
-    //Get the ID of the newly created user
-    const user_id = rows.insertId;
-    //Insert new user data
-    await db.query(
+    const user_id = rows.insertId; //Obtain an ID of the inserted user
+
+    //Insert details in 'User_details'
+    await connection.query(
       "INSERT INTO user_details (user_id, user_names, last_names, phone_number, identification, birth_date, bank, account_number, type_identification, employee_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         user_id,
@@ -58,8 +62,14 @@ export const registerUserModel = async (userData, userDetails) => {
         employee_type,
       ]
     );
+
+    await connection.commit(); //Confirm the transaction if everything went well
+    connection.release(); //release the connection
+    return { success: true, user_id };
   } catch (error) {
-    throw error; //Throw the error to handle it out of scope
+    await connection.rollback(); //reverse changes if there was error
+    connection.release(); //release the connection
+    throw error;
   }
 };
 
@@ -80,9 +90,17 @@ export const searchUsersModel = async (
     throw error;
   }
 };
+export const updateUserDataModel = async (
+  userData,
+  userDetails,
+  user_type,
+  user_id
+) => {
+  const connection = await db.getConnection();//Obtain manually connection
 
-export const updateUserDataModel = async (userData, userDetails, user_type, user_id) => {
   try {
+    await connection.beginTransaction(); //Start transaction
+
     const { email } = userData;
     const {
       user_names,
@@ -96,14 +114,14 @@ export const updateUserDataModel = async (userData, userDetails, user_type, user
       employee_type,
     } = userDetails;
 
-    //update user data
-    await db.query(
+    // Update User in 'Users'
+    await connection.query(
       "UPDATE users SET email = ?, user_type = ? WHERE user_id = ?",
       [email, user_type, user_id]
     );
 
-    //update user details
-    await db.query(
+  //Update details at 'User_Details'
+    await connection.query(
       "UPDATE user_details SET user_names = ?, last_names = ?, phone_number = ?, identification = ?, birth_date = ?, bank = ?, account_number = ?, type_identification = ?, employee_type = ? WHERE user_id = ?",
       [
         user_names,
@@ -118,10 +136,18 @@ export const updateUserDataModel = async (userData, userDetails, user_type, user
         user_id,
       ]
     );
+
+    await connection.commit();//Confirm changes if everything went well
+    connection.release();//release connection
+
+    return { success: true, message: "Usuario actualizado correctamente" };
   } catch (error) {
+    await connection.rollback(); // Reverse changes in case of error
+    connection.release(); //Release connection after error
     throw error;
   }
 };
+
 export const deleteUserModel = async (id) => {
   try {
     await db.query("DELETE FROM users WHERE user_id = ?", [id]);
@@ -130,11 +156,13 @@ export const deleteUserModel = async (id) => {
   }
 };
 
-export const getEmployees = async (employee_type) => {
+export const getEmployees = async (employees) => {
+  //generates?,?,? According to the number of elements
+  const placeholders = employees.map(() => "?").join(",");
   try {
     const [rows] = await db.query(
-      "SELECT usr.user_id, usr.email, usr.user_type, ud.user_names, ud.last_names, ud.phone_number, ud.identification, ud.birth_date, ud.bank, ud.account_number, ud.type_identification, ud.employee_type FROM users usr INNER JOIN user_details ud ON usr.user_id = ud.user_id where ud.employee_type  = ?",
-      [employee_type]
+      `SELECT usr.user_id, usr.email, usr.user_type, ud.user_names, ud.last_names, ud.phone_number, ud.identification, ud.birth_date, ud.bank, ud.account_number, ud.type_identification, ud.employee_type FROM users usr INNER JOIN user_details ud ON usr.user_id = ud.user_id where ud.employee_type IN (${placeholders})`,
+      employees
     );
     return rows;
   } catch (error) {

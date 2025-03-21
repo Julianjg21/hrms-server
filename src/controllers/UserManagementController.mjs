@@ -137,8 +137,21 @@ export const deleteUserController = async (req, res) => {
 
 export const searchEmployeesController = async (req, res) => {
   const { employee_type } = req.query;
+
+  const workAreas = {
+    seguridad: [
+      "Operario de seguridad"
+    ],
+    administrador: ["Administrador"],
+    limpieza: ["Operario de limpieza"],
+    atencion: ["Bartender", "Mesero", "Host"],
+    entretenimiento: ["DJ"],
+  }
+
+  const employees = workAreas[employee_type];
+
   try {
-    const user = await getEmployees(employee_type);
+    const user = await getEmployees(employees);
     res.status(200).json({ message: "Usuarios encontrados", user });
   } catch (error) {
     Sentry.captureException(error);

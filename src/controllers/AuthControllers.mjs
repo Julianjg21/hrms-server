@@ -47,6 +47,7 @@ export const loginUserController = async (req, res) => {
     const token = jwt.sign(
       {
         user_id: user.user_id,
+        user_names:user.user_names,
         email: user.email,
         identification: user.identification,
         user_type: user.user_type,
@@ -69,6 +70,7 @@ export const loginUserController = async (req, res) => {
       permissions,
       userId: user.user_id,
       email: user.email,
+      user_names:user.user_names,
     });
   } catch (error) {
     Sentry.captureException(error);

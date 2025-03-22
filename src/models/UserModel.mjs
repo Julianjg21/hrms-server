@@ -2,8 +2,8 @@ import db from "../config/Database.mjs";
 
 //search the email received in the database
 export const findUserByEmailModel = async (email) => {
-  //select all data from the users table if the email is found
-  const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+  //select all data from the user if the email is found
+  const [rows] = await db.query("SELECT * FROM users usr  INNER JOIN user_details ud ON  usr.user_id = ud.user_id  WHERE usr.email = ? ", [email]);
   //return response from database
   return rows[0];
 };

@@ -1,5 +1,6 @@
 import "./SentryConfig.mjs";
 import * as Sentry from "@sentry/node";
+import dotenv from "dotenv"
 import express from "express";
 import cors from "cors";
 import AuthRoutes from "./routes/AuthRoutes.mjs";
@@ -10,8 +11,17 @@ import UserManagement from "./routes/UserManagementRoutes.mjs";
 import UserDocuments from "./routes/UserDocumentsRoute.mjs";
 
 const App = express();
+//Load the environment variables
+dotenv.config({ path: "./src/config/configs.env" });
 
-App.use(cors()); //enable CORS
+const corsOptions = {
+  origin: process.env.CLIENT_ORIGIN, // Specifies the allowed origin from environment variables
+  methods: "GET,POST,PUT,DELETE", // Defines the HTTP methods allowed for cross-origin requests
+  credentials: true, // Allows cookies and authentication headers to be sent with requests
+};
+
+
+App.use(cors(corsOptions));
 App.use(express.json()); //json parsing
 
 App.use("/auth", AuthRoutes);

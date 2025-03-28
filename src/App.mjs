@@ -1,5 +1,6 @@
 import "./SentryConfig.mjs";
 import * as Sentry from "@sentry/node";
+import helmet from "helmet";
 import dotenv from "dotenv"
 import express from "express";
 import cors from "cors";
@@ -20,7 +21,8 @@ const corsOptions = {
   credentials: true, // Allows cookies and authentication headers to be sent with requests
 };
 
-
+//Helmet to improve security
+app.use(helmet());
 App.use(cors(corsOptions));
 App.use(express.json()); //json parsing
 

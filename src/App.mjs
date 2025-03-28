@@ -22,7 +22,7 @@ const corsOptions = {
 };
 
 //Helmet to improve security
-app.use(helmet());
+App.use(helmet());
 App.use(cors(corsOptions));
 App.use(express.json()); //json parsing
 

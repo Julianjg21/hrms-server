@@ -7,29 +7,24 @@ import {
 } from "../models/UserModel.mjs";
 import * as Sentry from "@sentry/node";
 import bcrypt from "bcrypt";
+
+
 export const createUsersController = async (req, res) => {
   const { userData, userDetails } = req.body;
   try {
-    let userType = "";
-    //Check the user type
-    switch (userDetails.employee_type) {
-      case "Bartender":
-      case "Mesero":
-      case "Host":
-      case "Operario de limpieza":
-      case "DJ":
-      case "Operario de seguridad":
-        userType = "employee";
-        break;
-      case "Administrador":
-        userType = "administrator";
-        break;
-      case "Gerente":
-        userType = "manager";
-        break;
-      default:
-        break;
-    }
+    //Map the employee type to user_type
+    const roleMap = {
+      Bartender: "employee",
+      Mesero: "employee",
+      Host: "employee",
+      "Operario de limpieza": "employee",
+      DJ: "employee",
+      "Operario de seguridad": "employee",
+      Administrador: "administrator",
+      Gerente: "manager"
+    };
+
+    const userType = roleMap[userDetails.employee_type] || "";
 
     //Generate hash of the password
     const hash = await bcrypt.hash(userData.identification, 10);
@@ -90,26 +85,20 @@ export const searchUsersController = async (req, res) => {
 export const editUserDataController = async (req, res) => {
   const { userData, userDetails } = req.body;
   const user_id = req.params.id;
-  let user_type = "";
-  //Check the user type
-  switch (userDetails.employee_type) {
-    case "Bartender":
-    case "Mesero":
-    case "Host":
-    case "Operario de limpieza":
-    case "DJ":
-    case "Operario de seguridad":
-      user_type = "employee";
-      break;
-    case "Administrador":
-      user_type = "administrator";
-      break;
-    case "Gerente":
-      user_type = "manager";
-      break;
-    default:
-      break;
-  }
+  //Map the employee type to user_type
+  const roleMap = {
+    Bartender: "employee",
+    Mesero: "employee",
+    Host: "employee",
+    "Operario de limpieza": "employee",
+    DJ: "employee",
+    "Operario de seguridad": "employee",
+    Administrador: "administrator",
+    Gerente: "manager"
+  };
+
+  const user_type = roleMap[userDetails.employee_type] || "";
+
   try {
     await updateUserDataModel(userData, userDetails, user_type, user_id);
     res.status(200).json({ message: "Usuario actualizado correctamente." });

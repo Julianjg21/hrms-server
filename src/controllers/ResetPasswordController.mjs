@@ -56,7 +56,7 @@ export const findEmailController = async (req, res) => {
       });
 
       const mailOptions = {
-        from: "Juventus Bar HRMS",
+        from: "JUVENTUS BAR HRMS",
         to: email,
         subject: "Restablecimiento de Contraseña",
         html: `

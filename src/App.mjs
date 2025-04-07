@@ -10,6 +10,7 @@ import db from "./config/Database.mjs";
 import ResetPasswordRoutes from "./routes/ResetPasswordRoutes.mjs";
 import UserManagement from "./routes/UserManagementRoutes.mjs";
 import UserDocuments from "./routes/UserDocumentsRoute.mjs";
+import UserEvents from "./routes/UserEventsRoutes.mjs";
 
 const App = express();
 //Load the environment variables
@@ -31,6 +32,7 @@ App.use("/requestResetPassword", ResetPasswordRoutes);
 App.use("/requestUserRole", UserRoleRoutes);
 App.use("/requestUserManagement", UserManagement);
 App.use("/requestUserDocuments", UserDocuments);
+App.use("/requestUserEvents", UserEvents);
 
 // Register Sentry's error handler middleware
 Sentry.setupExpressErrorHandler(App);

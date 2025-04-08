@@ -24,9 +24,10 @@ const corsOptions = {
 
 //Helmet to improve security
 App.use(helmet());
-App.use(cors(corsOptions));
+App.use(cors(corsOptions));// Sets up CORS with the specified options
 App.use(express.json()); //json parsing
 
+// Routes
 App.use("/auth", AuthRoutes);
 App.use("/requestResetPassword", ResetPasswordRoutes);
 App.use("/requestUserRole", UserRoleRoutes);

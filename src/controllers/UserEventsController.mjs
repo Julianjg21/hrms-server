@@ -13,7 +13,7 @@ export const createNewEvent = async (req, res) => {
     await createNewEventModel(eventData); // Call the model function to create a new event
     return res.status(200).json({
       status: "success",
-      message: "Event created successfully",
+      message: "Evento creado con exito",
     });
   } catch (error) {
     console.log(error);

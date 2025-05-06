@@ -32,7 +32,7 @@ export const updateEvent = async (req, res) => {
     await updateEventModel(eventData); // Call the model function to update the event
     return res.status(200).json({
       status: "success",
-      message: "Event updated successfully",
+      message: "Evento actualizado con exito",
     });
   } catch (error) {
     console.log(error);
@@ -68,7 +68,7 @@ export const deleteEvent = async (req, res) => {
     await deleteEventModel(eventId); // Call the model function to delete the event
     return res.status(200).json({
       status: "success",
-      message: "Event deleted successfully",
+      message: "Evento eliminado con exito.",
     });
   } catch (error) {
     console.log(error);

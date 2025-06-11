@@ -1,7 +1,7 @@
 import {
   createNewEventModel,
   updateEventModel,
-  getAllEventsModel,
+  getAllEventsByDateModel,
   deleteEventModel,
 } from "../models/UserEventsModel.mjs";
 import * as Sentry from "@sentry/node";
@@ -45,10 +45,12 @@ export const updateEvent = async (req, res) => {
 };
 
 // Function to get all events for a user
-export const getAllEvents = async (req, res) => {
-  const userId = req.params.userId; // Get the user ID from the request parameters
+export const getAllEventsByDate = async (req, res) => {
+  const { date } = req.params; // Obtén la fecha desde los parámetros de la ruta
+console.log("Date received:", date); // Log the date for debugging
+ // Get the user ID from the request parameters
   try {
-    const events = await getAllEventsModel(userId); // Call the model function to get all events for the user
+    const events = await getAllEventsByDateModel(date); // Call the model function to get all events for the user
     return res.status(200).json({
       status: "success",
       data: events,
@@ -60,6 +62,8 @@ export const getAllEvents = async (req, res) => {
     return res.status(500).json({ message: "Error trying to get the events" });
   }
 };
+
+
 
 // Function to delete an event
 export const deleteEvent = async (req, res) => {

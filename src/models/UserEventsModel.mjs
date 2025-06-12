@@ -40,11 +40,11 @@ export const updateEventModel = async (eventData) => {
   }
 };
 
-export const getAllEventsModel = async (userId) => {
+export const getAllEventsByDateModel = async (date) => {
   try {
     // Get all events for the user from the database
-    const [rows] = await db.query("SELECT * FROM events WHERE id_user = ?", [
-      userId,
+    const [rows] = await db.query("SELECT * FROM events WHERE DATE(start_date) <= ? AND DATE(end_date) >= ?", [
+      date,date
     ]);
     return rows;
   } catch (error) {
